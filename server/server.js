@@ -19,6 +19,33 @@ server.listen(port, () => {
 })
 io.on('connection', (socket) =>{
     console.log("New user just join the room");
+
+    socket.emit('messageFromServer', {
+        'from' : 'Admin',
+        'text' : 'Welcone to chat room',
+        'createdAt' :  Date.now
+    })
+    socket.broadcast.emit('messageFromServer', {
+        'from' : 'Admin',
+        'text' : 'A new user has joined the room',
+        'createdAt' :  Date.now
+    })
+
+    socket.on('createMessage', (massage) =>{
+        console.log("recieve message: ", massage);
+        io.emit('messageFromServer', {
+            'from' : massage.from,
+            'text' : massage.text,
+            'createdAt' : massage.createdAt
+        })
+
+    })
+
+    socket.emit('messageFromServer', {
+        Message : "Hello from server" 
+    });
+
+
     socket.on('disconnect', (socket) =>{
         console.log("New user just leave the room");
     })
