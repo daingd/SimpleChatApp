@@ -23,7 +23,7 @@ navigator.mediaDevices.getUserMedia({
   });
 
   socket.on('peer-connected', (peerId) => {
-    setTimeout(connectToNewUser,500,peerId,stream)
+    setTimeout(connectToNewUser,1000,peerId,stream)
   });
 })
 
