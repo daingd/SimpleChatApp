@@ -4,8 +4,8 @@ class UsersList {
         this.users = [];
     }
 
-    addUser(id,name,room){
-        this.users.push({id,name,room});
+    addUser(id,name,room,peerId){
+        this.users.push({id,name,room,peerId});
         return this.users;
     }
     getUsersName(room){

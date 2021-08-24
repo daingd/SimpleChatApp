@@ -3,10 +3,12 @@ const path = require('path');
 const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
+let cors = require("cors");
+// const {ExpressPeerServer} = require('peer');
+
 const {generateMessage} = require('./utils/Message');
 const {isValidString} = require('./utils/StringUtil');
 const {UsersList} = require('./utils/UserList');
-
 
 
 const publicPath = path.join(__dirname,"/../public");
@@ -15,8 +17,24 @@ let app = express();
 let server = http.createServer(app);
 let io = socketIO(server);
 let userList = new UsersList();
+//for local host
+// var ExpressPeerServer = require('peer').ExpressPeerServer;
+// var peerExpress = require('express');
+// var peerApp = peerExpress();
+// var peerServer = require('http').createServer(peerApp);
+// var options = { debug: true }
+// var peerPort = 9000;
+// app.use(express.static(publicPath));
+// app.use(cors());
+// peerApp.use('/peerjs', ExpressPeerServer(peerServer, options));
+// peerServer.listen(peerPort);
 
-app.use(express.static(publicPath));
+const { ExpressPeerServer } = require('peer');
+const peerServer = ExpressPeerServer(server, {
+  debug: true
+});
+app.use('/peerjs', peerServer);
+
 
 
 server.listen(port, () => {
@@ -34,12 +52,14 @@ io.on('connection', (socket) =>{
             socket.join(params.room);
 
             userList.removeUser(socket.id);
-            userList.addUser(socket.id,params.name,params.room);
+            userList.addUser(socket.id,params.name,params.room,params.peerId);
+            console.log(userList)
 
             io.to(params.room).emit('updateUserlist',userList.getUsersName(params.room))
-
             socket.emit('messageFromServer',generateMessage('Admin',`Welcome to room ${params.room} !!`));
             socket.broadcast.to(params.room).emit('messageFromServer',generateMessage('Admin',`${params.name} joined the room !!`));
+            socket.broadcast.to(params.room).emit('peer-connected',params.peerId);
+            console.log('peerId',params.peerId);
             callback();
         }
        
@@ -55,10 +75,13 @@ io.on('connection', (socket) =>{
         }
     })
     socket.on('disconnect', () =>{
-        let leftUser = userList.removeUser(socket.id);  
+        let leftUser = userList.removeUser(socket.id); 
+         
         if(leftUser){
+            io.to(leftUser.room).emit('user-disconnected',leftUser.peerId )
             io.to(leftUser.room).emit('updateUserlist',userList.getUsersName(leftUser.room));
             io.to(leftUser.room).emit('messageFromServer',generateMessage('Admin',`${leftUser.name} left the room.`));
+
             console.log("A user just left");
         }
     })

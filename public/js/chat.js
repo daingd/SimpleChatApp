@@ -1,17 +1,69 @@
-
-
 let socket = io();
+const myVideo = document.createElement('video');
+myVideo.muted = true;
+const peers = {};
+const myPeer = new Peer(undefined, {
+  path: '/peerjs',
+  host: '/',
+  port: 443
+})
 
-socket.on('connect', () =>{
+const videoGrid = document.getElementById('video-grid');
+navigator.mediaDevices.getUserMedia({
+  video: true,
+  audio: true
+}).then(stream => {
+  addVideoStream(myVideo,stream);
+  
+  myPeer.on("call", (call) => {
+    call.answer(stream);
+    const video = document.createElement("video");
+    call.on("stream", (userVideoStream) => {
+      addVideoStream(video, userVideoStream);
+    });
+  });
+
+  socket.on('peer-connected', (peerId) => {
+    setTimeout(connectToNewUser,500,peerId,stream)
+  });
+})
+
+const connectToNewUser = (peerId,myVideoStream) => {
+  const call = myPeer.call(peerId,myVideoStream);
+  peers[peerId] = call;
+  console.log(peers)
+  const video = document.createElement('video');
+  call.on('stream', userVideoStream => {
+    addVideoStream(video,userVideoStream);
+  });
+  call.on('close',() => {
+    video.remove();
+  })
+}
+
+const addVideoStream = (video,stream) => {
+  video.srcObject = stream;
+  video.addEventListener('loadedmetadata', () => {
+    video.play();
+  })
+  videoGrid.append(video);
+}
+
+
+
+
+myPeer.on('open', (id) =>{
     let searchQuery = window.location.search.substring(1);
     let params = JSON.parse('{"' + decodeURI(searchQuery).replace(/&/g, '","').replace(/\+/g, ' ').replace(/=/g,'":"') + '"}');
-    console.log(params);
+    params['peerId']= id;
+    console.log('mine id',id);
     socket.emit('join', params, (err) => {
       if(err){
         alert(err);
         window.location.href = '/';
       }
     })
+    
 });
 socket.on('updateUserlist', (userList) =>{
     let ol = document.createElement('ol');
@@ -28,6 +80,11 @@ socket.on('updateUserlist', (userList) =>{
 socket.on('disconnect', () =>{
     console.log("disconected from server");
 });
+
+socket.on('user-disconnected', peerId => {
+  if (peers[peerId]) peers[peerId].close()
+})
+
 
 socket.on('messageFromServer', (message) => {
   const formattedTime = moment(message.createdAt).format('LT');
