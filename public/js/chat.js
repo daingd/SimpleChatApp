@@ -1,4 +1,4 @@
-let socket = io();
+let socket = io('/');
 const myVideo = document.createElement('video');
 myVideo.muted = true;
 const peers = {};
@@ -113,9 +113,7 @@ window.onload=function(){
         })
     });
 }
-$(window).on('beforeunload', function(){
-  socket.close();
-});
+
 
 
 
