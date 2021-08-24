@@ -4,7 +4,6 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 let cors = require("cors");
-// const {ExpressPeerServer} = require('peer');
 
 const {generateMessage} = require('./utils/Message');
 const {isValidString} = require('./utils/StringUtil');
@@ -24,8 +23,6 @@ let userList = new UsersList();
 // var peerServer = require('http').createServer(peerApp);
 // var options = { debug: true }
 // var peerPort = 9000;
-// app.use(express.static(publicPath));
-// app.use(cors());
 // peerApp.use('/peerjs', ExpressPeerServer(peerServer, options));
 // peerServer.listen(peerPort);
 
@@ -35,6 +32,8 @@ const peerServer = ExpressPeerServer(server, {
 });
 app.use('/peerjs', peerServer);
 
+app.use(express.static(publicPath));
+app.use(cors());
 
 
 server.listen(port, () => {
