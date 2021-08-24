@@ -28,13 +28,14 @@ let userList = new UsersList();
 
 const { ExpressPeerServer } = require('peer');
 const peerServer = ExpressPeerServer(server, {
-  debug: true
+  debug: true,
+  port: 443,
 });
 app.use('/peerjs', peerServer);
 
 app.use(express.static(publicPath));
 app.use(cors());
-
+ 
 
 server.listen(port, () => {
     console.log(`Server is up on port ${port}`);
