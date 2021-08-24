@@ -11,7 +11,7 @@ const {UsersList} = require('./utils/UserList');
 
 
 const publicPath = path.join(__dirname,"/../public");
-const port = process.env.PORT || 8090;
+const port = process.env.PORT || 3000;
 let app = express();
 let server = http.createServer(app);
 let io = socketIO(server);
@@ -29,12 +29,12 @@ let userList = new UsersList();
 const { ExpressPeerServer } = require('peer');
 const peerServer = ExpressPeerServer(server, {
   debug: true,
-  port: 443,
+  
 });
 app.use('/peerjs', peerServer);
+app.use(cors());
 
 app.use(express.static(publicPath));
-app.use(cors());
  
 
 server.listen(port, () => {
