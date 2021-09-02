@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/styles.css">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>Chat</title>
 </head>
 <body class="chat">
@@ -17,17 +17,36 @@
     </div>
    
     <div class="chat__main">
-      <div id="video-grid">
+      <div id="video-grid" style="padding: 10px;">
       
       </div>
       <ol id="messages" class="chat__messages"></ol>
 
-      <div class="chat__footer">
-        <form id="message-form">
-          <input name="message" type="text" placeholder="Message" autofocus autocomplete="off"/>
-          <button class="submit-btn">Send</button>
-        </form>
-       
+      <div class="chat__footer" style="display: flex; flex-direction: column;">
+        <div class="main__controls">
+          <div class="main__controls__block">
+             <div onclick="muteUnmute()" class="main__controls__button main__mute_button">
+                <i class="fas fa-microphone"></i>
+                <span>Mute</span>
+             </div>
+             <div onclick="playStop()" class="main__controls__button main__video_button" >
+                <i class="fas fa-video"></i>
+                <span>Stop Video</span>
+             </div>
+             
+              <div onclick="leave()" class="main__controls__button main__video_button">
+                <i class="fas fa-phone-slash"></i></div>
+          
+          </div>
+        </div>
+        <div >
+          <form id="message-form">
+            <input name="message" type="text" placeholder="Message" autofocus autocomplete="off"/>
+            <button class="submit-btn">Send</button>
+          </form>
+           
+        </div>
+        
       </div>
     </div>
 

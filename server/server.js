@@ -16,6 +16,7 @@ let app = express();
 let server = http.createServer(app);
 let io = socketIO(server);
 let userList = new UsersList();
+
 //for local host
 // var ExpressPeerServer = require('peer').ExpressPeerServer;
 // var peerExpress = require('express');
@@ -26,6 +27,8 @@ let userList = new UsersList();
 // peerApp.use('/peerjs', ExpressPeerServer(peerServer, options));
 // peerServer.listen(peerPort);
 
+
+// for Heroku
 const { ExpressPeerServer } = require('peer');
 const peerServer = ExpressPeerServer(server, {
   debug: true,
@@ -81,7 +84,7 @@ io.on('connection', (socket) =>{
             io.to(leftUser.room).emit('user-disconnected',leftUser.peerId )
             io.to(leftUser.room).emit('updateUserlist',userList.getUsersName(leftUser.room));
             io.to(leftUser.room).emit('messageFromServer',generateMessage('Admin',`${leftUser.name} left the room.`));
-
+            
             console.log("A user just left");
         }
     })

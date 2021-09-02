@@ -2,14 +2,42 @@ button,button:hover{border:none;color:#fff;padding:10px}.chat__messages,.chat__s
 
 
 #video-grid {
+    background-color: #698ea5;
     display: flex;
     justify-content: center;
-    background-color: #2992d8;
-
+    align-items: center;
+    
+  
 }
 video{
-    max-height: 300px;
+    max-height: 300px ;
     max-width: 300px;
     object-fit: cover;
     flex-shrink: 1;
+    padding: 20px;
+}
+
+.main__controls__block {
+    display: flex;
+    justify-content: center;
+
+}
+
+.main__controls__button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 10px;
+    min-width: 80px;
+    cursor: pointer;
+}
+
+.main__controls__button:hover {
+    background-color: #698ea5;
+    border-radius: 5px;
+}
+
+.main__controls__button i {
+    font-size: 24px;
 }
